@@ -25,7 +25,7 @@ struct doobit{
 	int8_t getlow();
 	int8_t gethigh();
 
-	int operator*(doobit& b){
+	int16_t operator*(doobit& b){
 		auto highprod = this->gethigh() * b.gethigh();
 		auto lowprod = this->getlow() * b.getlow();
 		return (highprod + lowprod);
@@ -67,23 +67,21 @@ int crosscorrelation(signal*, signal*, int = 0);
 std::vector<float> checkcorr(signal*, std::vector<float>);
 
 std::vector<float> freq = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
-const float corr_threshold = 0.26;
+const float corr_threshold = 0.1;
 
 int main(){
 	// construct sample arrays
 	signal f[SIZE];
 
-	auto gen_f = [](int x){
-				return (7*(sin(0.3 * x) + 4*sin(0.5 * x) + sin(0.8 * x + 0.6))/6);
+	auto f_gen = [](int x){
+				return (7.0*(sin(0.3 * x) + 4*sin(0.5 * x) + sin(0.8 * x + 0.6))/6.0);
 				};
 
-	for(int i = 0; i < SIZE; i += 2){
-		f[i] = signal(gen_f(i), gen_f(i+1)); 
+	for(int i = 0; i < SIZE; i++){
+		f[i] = signal(f_gen(2*i), f_gen(2*i+1)); 
 	}
 
-	std::vector<float> flist = {0.3, 0.5, 0.8, 0.9, 0.7, 0.1};
-
-	auto wpresent = checkcorr(f, flist);
+	auto wpresent = checkcorr(f, freq);
 
 	for(auto w : wpresent){
 		printf("%f ", w);
@@ -137,13 +135,13 @@ std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
 					for(auto w : wlist){
 						sum += sin(w*x);
 					}
-					return sum;
+					return 7.0*sum/float(wlist.size());
 				};
 
 	auto g = new signal[SIZE];
 	
 	for(int i = 0; i < SIZE; i++){
-		g[i] = signal(7 * g_gen(i)/float(wlist.size()));
+		g[i] = signal(g_gen(2*i), g_gen(2*i + 1));
 	}
 
 	auto norm_coeff = sqrt((correlation(f, f) * correlation(g, g)));
