@@ -13,29 +13,34 @@ int crosscorrelation(int*, int*, int = 0);
 std::vector<float> checkcorr(int*, std::vector<float>);
 
 std::vector<float> freq = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
-const float corr_threshold = 0.5;
+const float corr_threshold = 0.26;
 
 int main(){
 	// construct sample arrays
-	int f[SIZE], g[SIZE];
+	signal f[SIZE];
 
-	for(int i = 0; i < SIZE; i++){
-		f[i] = int(7*(sin(0.3 * i) + 4*sin(0.5 * i) + sin(0.8 * i + 0.6))); 
-		g[i] = int(7*(sin(0.3 * i + 0.5) + sin(0.5 * i + 0.9) + sin(0.8 * i))); 
+	auto gen_f = [](int x){
+				return (7*(sin(0.3 * x) + 4*sin(0.5 * x) + sin(0.8 * x + 0.6))/6);
+				};
+
+	for(int i = 0; i < SIZE; i += 2){
+		f[i] = signal(gen_f(i), gen_f(i+1)); 
 	}
 
-	double corr = correlation(f, g) / sqrt(correlation(f, f) * correlation(g, g));
+	std::vector<float> flist = {0.3, 0.5, 0.8, 0.9, 0.7, 0.1};
 
-	for(int i = -SIZE; i < SIZE; i++){
-		std::cout << float(crosscorrelation(f, g, i) / sqrt(correlation(f, f) * correlation(g, g))) << std::endl;		
+	auto wpresent = checkcorr(f, flist);
+
+	for(auto w : wpresent){
+		printf("%f ", w);
 	}
 
-	//std::cout << corr << std::endl;
+	printf("\n");
+
 	return 0;
 }
 
-int correlation(int* f, int* g){
-	int size = sizeof(*f) / sizeof(int);
+int correlation(signal* f, signal* g){
 	int sum = 0;
 
 	for(int i = 0; i < SIZE; i++){
@@ -44,8 +49,7 @@ int correlation(int* f, int* g){
 	return sum;
 }
 
-int crosscorrelation(int* f, int* g, int m){
-	int size = sizeof(*f) / sizeof(int);
+int crosscorrelation(signal* f, signal* g, int m){
 	int sum = 0;
 
 	if(m >= 0){
@@ -68,7 +72,7 @@ int crosscorrelation(int* f, int* g, int m){
 	return sum;
 }
 
-std::vector<float> checkcorr(int* f, std::vector<float> wlist){
+std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
 
 	if(wlist.size() == 0) return wlist;
 
@@ -82,16 +86,17 @@ std::vector<float> checkcorr(int* f, std::vector<float> wlist){
 					return sum;
 				};
 
-	auto g = new int[SIZE];
+	auto g = new signal[SIZE];
 	
 	for(int i = 0; i < SIZE; i++){
-		g[i] = int(7 * g_gen(i))/float(wlist.size());
+		g[i] = signal(7 * g_gen(i)/float(wlist.size()));
 	}
 
-	auto norm_coeff = 1/sqrt(correlation(f, f) * correlation(g, g));
+	auto norm_coeff = sqrt((correlation(f, f) * correlation(g, g)));
+	norm_coeff = 1/norm_coeff;
 
-	for(int i = 0; i < SIZE; i++){
-		auto corr = crosscorrelation(f, g, i) * norm_coeff;
+	for(int i = -SIZE+1; i < SIZE; i++){
+		auto corr = crosscorrelation(f, g, i);
 		maxcorr = maxcorr > corr ? maxcorr : corr;
 	}
 
@@ -99,12 +104,12 @@ std::vector<float> checkcorr(int* f, std::vector<float> wlist){
 	// before recursion else we run over quota
 	delete[] g; 
 
-	if(maxcorr < corr_threshold) return {};
+	if(maxcorr*norm_coeff < corr_threshold) return {};
 
 	if(wlist.size() == 1) return wlist;
 
 	auto wl = checkcorr(f, std::vector<float>(wlist.begin(), wlist.begin() + (wlist.size()/2)));
-	auto wr = checkcorr(f, std::vector<float>(wlist.begin() + (wlist.size()/2) + 1, wlist.end()));
+	auto wr = checkcorr(f, std::vector<float>(wlist.begin() + (wlist.size()/2), wlist.end()));
 
 	std::move(wr.begin(), wr.end(), std::back_inserter(wl));
 
