@@ -1,0 +1,60 @@
+% define general format 
+\usepackage[margin=1.5in]{geometry}
+
+% import req basic packages
+\usepackage[dvipsnames]{xcolor}
+\usepackage[tracking=true]{microtype}
+\usepackage{amsmath, amssymb}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{ifthen}
+\usepackage{lineno}
+\usepackage[utf8]{inputenc}
+\usepackage[title]{appendix}
+
+% tikz stuffs
+\usepackage{tikz, tkz-orm, pgfplots}
+\usetikzlibrary{arrows,shapes,automata,backgrounds,petri,decorations.markings}
+\usetikzlibrary{matrix,positioning,decorations.pathreplacing,calc,tikzmark}
+\pgfplotsset{width=7.5cm,compat=1.12}
+\usepgfplotslibrary{fillbetween}
+
+% customised links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+
+% code display style
+\usepackage{verbatim}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.38,0,0.52}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.95}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
