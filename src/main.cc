@@ -7,8 +7,7 @@
 #include <cstdint>
 #include <cassert>
 
-#define mop(x, y) x*y
-#define SIZE 50
+#define SIZE 100
 
 // bit mask storage
 struct doobit{
@@ -96,7 +95,7 @@ int correlation(signal* f, signal* g){
 	int sum = 0;
 
 	for(int i = 0; i < SIZE; i++){
-		sum += mop(f[i], g[i]);
+		sum += f[i] * g[i];
 	}
 	return sum;
 }
@@ -106,19 +105,19 @@ int crosscorrelation(signal* f, signal* g, int m){
 
 	if(m >= 0){
 		for(int i = 0; i < SIZE - m; i++){
-			sum += mop(f[i], g[i+m]);
+			sum += f[i] * g[i+m];
 		}
 		for(int i = 0; i < m; i++){
-			sum += mop(f[i+SIZE-m], g[i]);
+			sum += f[i+SIZE-m] * g[i];
 		}
 	}
 	else{
 		m = -m;
 		for(int i = 0; i < m; i++){
-			sum += mop(f[i], g[i+SIZE-m]);
+			sum += f[i] * g[i+SIZE-m];
 		}
 		for(int i = m; i < SIZE; i++){
-			sum += mop(f[i], g[i-m]);
+			sum += f[i] * g[i-m];
 		}
 	}
 	return sum;
