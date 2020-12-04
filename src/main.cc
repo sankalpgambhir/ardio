@@ -1,16 +1,70 @@
 // main.cc
 
-#include <iostream>
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <cstdio>
+#include <cstdint>
+#include <cassert>
 
 #define mop(x, y) x*y
 #define SIZE 50
 
-int correlation(int*, int*);
-int crosscorrelation(int*, int*, int = 0);
-std::vector<float> checkcorr(int*, std::vector<float>);
+// bit mask storage
+struct doobit{
+	uint_fast8_t data;
+
+	doobit(int8_t x = 0, int8_t y = 0){ // handles all our casts too
+		this->storelow(x);
+		this->storehigh(y);
+	}
+
+	void storelow(int8_t);
+	void storehigh(int8_t);
+
+	int8_t getlow();
+	int8_t gethigh();
+
+	int operator*(doobit& b){
+		auto highprod = this->gethigh() * b.gethigh();
+		auto lowprod = this->getlow() * b.getlow();
+		return (highprod + lowprod);
+	}
+};
+
+void doobit::storelow(int8_t x){
+	this->data &= 0b11110000;  // clear for storage
+
+	x += 7; // remove signed component
+	assert((!(x & 0b11110000)) && "doobit range violation");
+
+	this->data |= x;
+}
+
+void doobit::storehigh(int8_t x){
+	this->data &= 0b00001111;  // clear for storage
+
+	x += 7; // remove signed component
+	assert((!(x & 0b11110000)) && "doobit range violation");
+
+	this->data |= (x << 4);
+}
+
+int8_t doobit::getlow(){
+	int8_t x = (data & 0b00001111); // bitmask
+	return (x-7); // reinsert sign
+}
+
+int8_t doobit::gethigh(){
+	int8_t x = ((data & 0b11110000) >> 4); // bitmask and shift
+	return (x-7); // reinsert sign
+}
+
+typedef doobit signal;
+
+int correlation(signal*, signal*);
+int crosscorrelation(signal*, signal*, int = 0);
+std::vector<float> checkcorr(signal*, std::vector<float>);
 
 std::vector<float> freq = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
 const float corr_threshold = 0.26;
