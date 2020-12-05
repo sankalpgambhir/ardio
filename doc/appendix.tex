@@ -1,14 +1,17 @@
 
 \begin{subappendices}
     \renewcommand{\thesection}{\Alph{section}}
+    \def\sectionautorefname{Appendix}
 
     \section{Arduino Code}
+    \label{sec:arduinocode}
     Here is the full code sent to the Arduino, verbatim.
 
     \lstinputlisting[language=C++]{../src/main.ino}
 
     \newpage
     \section{MATLAB}
+    \label{sec:matlabcode}
     The code used inside MATLAB to record and send audio to the Arduino.
 
     \lstinputlisting[language=Matlab]{../src/getAudioAndSend2.m}

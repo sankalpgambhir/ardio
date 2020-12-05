@@ -1,0 +1,127 @@
+\subsection{Doobit™}
+
+Working on the Arduino with signals very quickly turned into a constant battle
+of resolution and storage, limited by its relatively tiny memory. After msot
+optimizations we went through, managing memory manually very closely and
+ensuring sequentialized execution contexts, we were teribly bottlenecked by the
+storage. To work around this physical limit, we manage each byte of the stored
+signal manually and instead of one, store two signal data points in every byte.
+This reduces our data resolution by way of being limited to 4 bits, but grants
+us unmatched robustness to noise by comparison, by doubling possible data
+processing capabilities. The system has been affectionately named Doobit.
+
+\begin{lstlisting}[language=C++]
+// bit mask storage
+struct doobit{
+    uint_fast8_t data;
+
+    doobit(int8_t x = 0, int8_t y = 0){ // handles all our casts too
+        this->storelow(x);
+        this->storehigh(y);
+    }
+
+    void storelow(int8_t);
+    void storehigh(int8_t);
+
+    int8_t getlow();
+    int8_t gethigh();
+
+    int16_t operator*(doobit& b);
+};
+\end{lstlisting}
+
+A \texttt{struct} provides us fast access with very little memory and
+performance overhead, something that only becomes more and more negligible as we
+increase our (now doubled!) data numbers.
+
+Unpacking the code block, \texttt{data} is the actual storage, an unsigned 8-bit
+type, chosen this way to avoid accidental signed interpretation and any unwanted
+processing by the compiler. Reliance on unsigneds in a case such as this is
+common even within the compiler itself, where it would convert signeds to
+unsigneds before evalutation to avoid ambiguity. In particular, a two's
+complement could scramble the data beyond recognition quite quickly.
+
+The \texttt{fast} part of \texttt{uint\_fast8\_t} indicates to the compiler that
+we are looking for a type that is atleast 8 bits, but is the fastest among
+those. On an Arduino Uno, of course, this is just the 8 bit unsigned integer,
+but on more exotic embedded systems this could end up being a 9 or 10 bit type,
+if not more. This notation allows for some compatibility between systems, though
+as is with embedded systems, one would try to create more efficient structures
+that exploit the architecture of those systems.
+
+The storage of the signal is handled by the \texttt{storelow()} and
+\texttt{storehigh()} functions, which store data into the 4 least significant
+and 4 most significantbits of the storage \texttt{data} respectively. We look at
+one of the functions:
+
+\begin{lstlisting}[language=C++]
+void doobit::storelow(int8_t x){
+	this->data &= 0b11110000;  // clear for storage
+
+	x += 7; // remove signed component
+	assert((!(x & 0b11110000)) && "doobit range violation");
+
+	this->data |= x;
+}
+\end{lstlisting}
+
+This function takes in a value \texttt{x}, to be stored in the lower 4 bits of
+\texttt{data}, and preparing for it, clears the lower 4 bits via an \texttt{AND}
+operation with a bitmask \texttt{11110000}. Following this, a manual conversion
+is made to ensure \texttt{x} is unsigned. The operation moves \texttt{x}'s
+previous range, -7 to +7, to now 0 to 14, with 15 remaining generally unused,
+rushing to somehow occupy this position leads to little benefit and after much
+trial to squeeze extra storage out of the system, was abandoned. 
+
+The \texttt{assert} exists merely for testing purposes to ensure our data can
+indeed fit in 4 bits. Finally, having ensured \texttt{x} has only its lower bits
+populated, an \texttt{OR} operation with the storage inserts it in.
+
+The \texttt{storehigh()} function works in a similar manner, albeit with a bit
+shift and an inverted bit mask to work on the 4 higher bits.
+
+Now remains the issue of retrieving data from this storage, and is done as very
+much the inverse of how it is stored:
+
+\begin{lstlisting}[language=C++]
+int8_t doobit::getlow(){
+    int8_t x = (data & 0b00001111); // bitmask
+    return (x-7); // reinsert sign
+}
+\end{lstlisting}
+
+The \emph{unrequired} data is removed via a bit mask, and would be moved
+rightwards via a bit shift in the case of \texttt{gethigh()}, and its signed
+nature is restored by shifting it back to the original range.
+
+The conversion to unsigned is quite important to have to not manage the carry
+bits arising from a two's complement operation. The number -7 in C++ could
+ambiguously be coming from an \texttt{int} (internally \texttt{int32\_t}) in
+which case the signed bit is the 32nd, while it could also be coming from an 8
+or 16 bit type, making the signed bit unclear and its extraction slow and
+painful. Asking for a change of range was the fastest of the operations we
+tested, included several bitwise only operations.
+
+The storage could be optimized for several arithmetic operations, but for our
+case in particular, for the correelation setups, we need only multiplication. As
+of now, this is done simply by retrieving the numbers individually and
+multiplying them pairwise. This is done as opposed to attempting bitwise
+operations as (1), multiplication operations are quite optimized on a circuit
+level in modern processors anyway, and more importantly (2), 4 bit being such a
+limited storage type, would cause an overflow for most possible multiplication
+operands.
+
+\begin{lstlisting}[language=C++]
+int16_t operator*(doobit& b){
+    auto highprod = this->gethigh() * b.gethigh();
+    auto lowprod = this->getlow() * b.getlow();
+    return (highprod + lowprod);
+}
+\end{lstlisting}
+
+This definition is obviously not compatible with all arithmetic operations, but
+quite specific for our limited operations, kept this way to prevent
+overcomplication of the rather heavily utilized routine.
+
+The full code for all the functions may as always be found
+\hyperref[sec:arduinocode]{in the Appendix}.
