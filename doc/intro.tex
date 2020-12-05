@@ -1,0 +1,23 @@
+
+The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. In order to achieve this processing, we came up with multiple optimizations. 
+
+1)Cross Correlations 
+Instead of doing a FFT on the Data, we will extract a few characteristic frequencies components by correlating the signal with a set of frequencies. The expression for crosscorrelation of 2 discrete signals \(x,y\) is given by 
+\begin{equation}
+    R_{xy}[k] = \sum_{i} x[i]y[i-k]
+\end{equation}
+Along with some normalization. The harmonics form a linearly independent set and return 0 correlation when the product is integrated over several time periods, ie 
+\begin{equation}
+    \frac{1}{\pi} \int_0^{2\pi}sin(n_1x)sin(n_2x) = \delta_{nn'}  
+\end{equation} 
+Where \(\delta\) is the usual Kronecker delta. We can normalize the correlation with the autocorrelation at 0 to get a number between -1 and 1 that characterized the coeficients.
+\begin{equation}
+    c_{xy} = \frac{R_{xy}[0]}{\sqrt{R_{xx}}[0]R_{yy}[0] }
+\end{equation} 
+However, the above expression does not account for the phase shift \(\phi\) between the harmonics which reduces the correlation by a factor of \(cos(\phi)\)Therefore we modify check the signal with phase shifted test harmonics by modifying the expression to :
+\begin{equation}
+    c_{xy} = \frac{\mathnormal{max}\{R_{xy}[k]\}}{\sqrt{R_{xx}}[0]R_{yy}[0] }
+\end{equation}
+This ensures that the loss due to the phase shift isn't captured. 
+1) Sampling 
+The Arduino has 2kB of SRAM available this means that any calculations we want to do (Array multiplication) must not exceed 2kB. In order to do this, we employ  
