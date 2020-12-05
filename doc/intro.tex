@@ -12,12 +12,14 @@ Along with some normalization. The harmonics form a linearly independent set and
 \end{equation} 
 Where \(\delta\) is the usual Kronecker delta. We can normalize the correlation with the autocorrelation at 0 to get a number between -1 and 1 that characterized the coeficients.
 \begin{equation}
-    c_{xy} = \frac{R_{xy}[0]}{\sqrt{R_{xx}}[0]R_{yy}[0] }
+    c_{xy} = \frac{R_{xy}[0]}{\sqrt{R_{xx}[0]R_{yy}[0]} }
 \end{equation} 
 However, the above expression does not account for the phase shift \(\phi\) between the harmonics which reduces the correlation by a factor of \(cos(\phi)\)Therefore we modify check the signal with phase shifted test harmonics by modifying the expression to :
 \begin{equation}
-    c_{xy} = \frac{\mathnormal{max}\{R_{xy}[k]\}}{\sqrt{R_{xx}}[0]R_{yy}[0] }
+    c_{xy} = \frac{\mathnormal{max}\{R_{xy}[k]\}}{\sqrt{R_{xx}[0]R_{yy}[0]} }
 \end{equation}
-This ensures that the loss due to the phase shift isn't captured. 
+This ensures that the loss due to potential phase shift is avoided by getting an estimate of the phase. 
+Further, these correlations avoid the complex multiplications required in FFT calculations while giving more characteristic data. 
+
 1) Sampling 
 The Arduino has 2kB of SRAM available this means that any calculations we want to do (Array multiplication) must not exceed 2kB. In order to do this, we employ  
