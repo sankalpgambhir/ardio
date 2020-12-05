@@ -19,19 +19,44 @@ std::vector<float> checkcorr(signal*, std::vector<float>);
 std::vector<float> freq = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
 const float corr_threshold = 0.1;
 
+// data input
 bool recording = false;
+uint16_t recorded = 0;
+String text;
+uint8_t has_num = 0;
+uint8_t k[] = {0, 0};
 
 typedef doobit signal;
 signal f[SIZE];
 
 void setup(){
     Serial.begin(9600);
+
+	// clear data just in case
+	for(int i = 0; i < SIZE; i++){
+		f[i] = 0;
+	}
 }
 
 void loop(){
 
     if(recording){
         // recording data
+		if (Serial.available()){
+			text = Serial.readStringUntil('$');
+			k[has_num] = text.toInt();
+			has_num++;
+		}
+		if ((has_num >= 2) && recorded < SIZE) {
+			recorded++;
+			f[recorded] = signal(k[0], k[1]); 
+			has_num = 0;
+		}
+		if(recorded >= SIZE){
+			Serial.write("G"); // we Good
+			digitalWrite(13,1);
+			recording = false;
+		}
     }
     else{
         // calculate with the data
