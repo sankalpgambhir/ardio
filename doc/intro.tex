@@ -1,5 +1,5 @@
 
-The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. In order to achieve this processing, we came up with multiple optimizations. 
+The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. The 2kB SRAM of the Arduino is the biggest botleneck here for doing any processing. In order to do this processing, we came up with multiple optimizations. 
 
 1)Cross Correlations 
 Instead of doing a FFT on the Data, we will extract a few characteristic frequencies components by correlating the signal with a set of frequencies. The expression for crosscorrelation of 2 discrete signals \(x,y\) is given by 
@@ -21,5 +21,9 @@ However, the above expression does not account for the phase shift \(\phi\) betw
 This ensures that the loss due to potential phase shift is avoided by getting an estimate of the phase. 
 Further, these correlations avoid the complex multiplications required in FFT calculations while giving more characteristic data. 
 
-1) Sampling 
-The Arduino has 2kB of SRAM available this means that any calculations we want to do (Array multiplication) must not exceed 2kB. In order to do this, we employ  
+2)Efficient Storage of Memory
+We store the signal using an array of 4 byte numbers, ie numbers from -7 to 7. This has several benefits: 
+a)You can store more numbers 
+b)You can perform the calculations in a smaller time period as the Arduino processor is 8-Bit. Instead of requiring multiple clock cycles to process 16 / 32 Bit datatypes like float we can process the signals much faster 
+
+3)Binary Search on the predefined frequency tree to find significant frequencies instead of running a linear comparison. 
