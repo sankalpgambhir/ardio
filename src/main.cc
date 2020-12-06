@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <cassert>
 
-#define SIZE 100
+#define SIZE 200
 
 // bit mask storage
 struct doobit{
@@ -146,9 +146,13 @@ std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
 	auto norm_coeff = sqrt((correlation(f, f) * correlation(g, g)));
 	norm_coeff = 1/norm_coeff;
 
-	for(int i = -SIZE+1; i < SIZE; i++){
+	for(int i = -40; i < 41; i++){
 		auto corr = crosscorrelation(f, g, i);
 		maxcorr = maxcorr > corr ? maxcorr : corr;
+		if (maxcorr < corr){
+			maxcorr = corr;
+			if(maxcorr*norm_coeff > corr_threshold) break;
+		}
 	}
 
 	// clean memory just in case it isn't deallocated 
