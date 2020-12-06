@@ -47,7 +47,7 @@ uint8_t k[] = {0, 0};
 signal f[SIZE];
 
 void setup(){
-    Serial.begin(9600);
+    Serial.begin(115200);
 
   // clear data just in case
   for(int i = 0; i < SIZE; i++){
