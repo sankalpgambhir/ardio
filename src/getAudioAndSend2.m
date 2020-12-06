@@ -13,13 +13,19 @@ function carr = getAudioAndSend2()
   % show data
   plot(d);
 
+  %Take average
+  for i = 1:430; 
+    avg(i) = round((d(500+i) + d(1000+i) + d(1500+i))/3);
+end
+
+
   % connect to arduino
   Ard = serial("COM3","BaudRate",115200);
   fopen(Ard);
 
   % send 400 and change samples
   for i = 1:430
-    fprintf(Ard,'%s\n',int2str(d(i)));
+    fprintf(Ard,'%s\n',int2str(avg(i)));
     pause(3/100); % prevents race condition!
   end
   
