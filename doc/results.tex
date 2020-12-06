@@ -118,43 +118,50 @@ All real tests were performed with a resolution of 1ms, and 200 data points.
     \setlength\tabcolsep{2em}
     \begin{tabular}{c | c | c}
         NCC Threshold (t)   & Input signals                                 & Output (kHz) \\ \hline
-        0.1                 & 0.4 kHz (generated using a phone speaker)     & INSERT \\   
-        0.1                 & 0.5 kHz (generated using a phone speaker)     & INSERT \\   
-        0.1                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
-        0.2                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
-        0.3                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
-        0.5                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
-        0.1                 & Speech                                        & INSERT \\   
-        0.1                 & SOME SHIT CHORD                               & INSERT \\   
-        0.1                 & SOME SHIT CHORD                               & INSERT \\   
-        0.1                 & SOME SHIT CHORD                               & INSERT \\   
+        0.1                 & 0.4 kHz (generated using a phone speaker)     & 0.2$^\ast$, 0.3, 0.4 \\   
+        0.1                 & 0.5 kHz (generated using a phone speaker)     & 0.3, 0.4, 0.5, 0.6$^\ast$ \\   
+        0.1                 & 0.6 kHz (generated using a phone speaker)     & 0.4, 0.5, 0.6, 0.7$^\ast$ \\   
+        0.2                 & 0.6 kHz (generated using a phone speaker)     & 0.4, 0.5, 0.6 \\   
+        0.3                 & 0.6 kHz (generated using a phone speaker)     & $\emptyset$ \\  
+        0.1                 & Speech ("Hello Hello")                        & 0.2$^\ast$, 0.3, 0.4, 0.5$^\ast$, 0.6 \\   
+        0.1                 & Middle C (261 Hz)                             & 0.3 \\   
+        0.1                 & Middle A (440 Hz)                             & 0.3, 0.4 
     \end{tabular}
     \captionsetup{justification=centering}
-    \caption{Experiments with real inputs and thresholds.}
+    \caption{Experiments with real inputs and thresholds. $\ast$ indicating the frequency appeared sometimes during several test runs.}
     \label{fig:realexp}
 
 \end{figure}
 
 \subsection{Proofs}
 
-\subsubsection{Code and compilation}
-
-screenshots of code compiled and running on arduino
+Screenshots for the code compiled and working may be seen in
+\autoref{fig:pushkcompile} and \autoref{fig:sankacompile} respectively for the
+group emmbers, and a photo each of the physical setups is found in
+\autoref{fig:realsetup}. These, along with some more photos, and video
+demonstrations, have been uploaded to the required shared directory, as well as
+\href{https://drive.google.com/drive/folders/1jjNn4WWWuB7WvTU04xIGaotz5W_Lfz55?usp=sharing}{to
+our own folder, linked here}.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{fig/pushkcompile.png}
-    \includegraphics[width=0.7\textwidth]{fig/sankacompile.png}
-    \caption{Code compiled and running synthetic tests. Left, Pushkar; right, Sankalp.}
+    \includegraphics[width=0.7\textwidth]{fig/pushkcompile1.png}
+    \includegraphics[width=0.7\textwidth]{fig/pushkcompile2.png}
+    \caption{Code compiled and running tests for Pushkar}
+    \label{fig:pushkcompile}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/sankacompile1.png}
+    \includegraphics[width=0.7\textwidth]{fig/sankacompile2.png}
+    \caption{Code compiled and running tests for Sankalp}
+    \label{fig:sankacompile}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\textwidth]{fig/pushkreal.png}
     \includegraphics[width=0.7\textwidth]{fig/sankareal.png}
-    \caption{Code running. Left, Pushkar; right, Sankalp.}
+    \caption{Physical setup. Top, Pushkar; bottom, Sankalp.}
+    \label{fig:realsetup}
 \end{figure}
-
-\subsubsection{Arduino and Humans}
-
-photo video uploads
