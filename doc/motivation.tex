@@ -7,7 +7,7 @@
 are the most important tools used in data processing. The relative amplitudes of
 the signal at different frequencies give us a lot of characterising data of the
 signal, and changing the signal in frequency space has a lot of applications,
-like auto-tuning, removing noise etc. 
+like auto-tuning, removing noise etc. \cite{wiki:fourier}
 
 \begin{equation}
     \tilde{f}(\omega) = \int_{-\infty}^{\infty} e^{-i\omega t}f(t) dt~.
@@ -25,11 +25,11 @@ of the system, its restriction to a tiny subset of points in frequency space.
 
 As such, simply extracting the info for these frequencies alone is sufficient,
 and can be done whilst incorporating several statistical approximations. This is
-easily done with a correlation of the signal with a pure mode. 
+easily done with a correlation of the signal with a pure mode. \cite{wiki:coranddep}
 
 However, when frequencies are aggregated, the phase difference is absorbed into
 the coefficients of multiple frequencies, but in the correlation scenario, no
-such hope exists. This is where cross-correlation comes in. 
+such hope exists. This is where cross-correlation comes in. \cite{wiki:crosscor}
 
 \begin{equation}
     (f \ast g)(t) \triangleq \int_{-\infty}^{+\infty} \overline{f(\tau)} \cdot g(t+\tau) d\tau
