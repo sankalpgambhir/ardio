@@ -1,1 +1,38 @@
 \subsection{Motivation}
+
+\subsubsection{Why are Fourier Transforms imp?} Write st.
+
+\subsubsection{Fourier is Overkill.}
+Looking at the structure of the Fourier transform, it is easy to see that it is
+closely resembles the idea of a correlation, essentially extracting from the
+signals its \emph{similarity} to a given frequency. These coefficients, gathered
+using all frequencies, can produce a one to one mapping to a function space in
+the frequency realm. However, the entire function is far too much information.
+For most tasks involving categorization and identification of sounds,
+fingerprinting is more than good enough. That is, considering the delta response
+of the system, its restriction to a tiny subset of points in frequency space.
+
+As such, simply extracting the info for these frequencies alone is sufficient,
+and can be done whilst incorporating several statistical approximations. This is
+easily done with a correlation of the signal with a pure mode. 
+
+However, when frequencies are aggregated, the phase difference is absorbed into
+the coefficients of multiple frequencies, but in the correlation scenario, no
+such hope exists. This is where cross-correlation comes in. 
+
+\begin{equation}
+    (f \ast g)(t) \triangleq \int_{-\infty}^{+\infty} \overline{f(\tau)} \cdot g(t+\tau) d\tau
+\end{equation}
+
+By considering the similarities of shifted signals, we can infer more precise
+information about their similarity in space, by completely disregarding the
+temporal dimension. This is immensely useful in matching an externally sourced
+wave of unknown phase with a synthetic mode of known or unknown phase to
+identify the wave.
+
+In particular, the global maximum of the cross-correlation may be taken as the
+phase independent correlation of two signals.
+
+\begin{equation}
+    corr(f, g) \triangleq \max((f \ast g) (t))_t
+\end{equation}
