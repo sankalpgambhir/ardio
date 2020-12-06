@@ -1,0 +1,26 @@
+The first thing to do is check whether the correlation function gives us an appropriate response with this sampling rate. In order to do this, we plot the correlation coefficient of a signal and a pure harmonic vs a change in frequency about the pure harmonic for \(N\) datapoints. 
+
+The code for plotting these graphs in MATLAB is given here: \\
+1)Code for correlation of 2 signals
+\begin{lstlisting}
+    
+function outp = corel(A,B)
+ outp = 0;
+ normA = 0;
+ normB = 0;
+ for i = 1:length(A)
+     outp = outp+(A(i)*B(i));
+     normA = normA+(A(i)^2);
+     normB = normB+ (B(i)^2);
+ end
+ outp = outp/sqrt(normA*normB);
+end
+\end{lstlisting} 
+
+2)Code for getting graphs
+\begin{lstlisting}
+    
+\end{lstlisting}
+
+
+
