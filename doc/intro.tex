@@ -1,5 +1,5 @@
 
-The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. The 2kB SRAM of the Arduino is the biggest botleneck here for doing any processing. In order to do this processing, we came up with multiple optimizations. 
+The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. The data that would we like to extract is the presence and absence of certain characteristic frequencies and the correlation with certain a few characteristic chords to act as an audio visualiser that we send to LEDs. The 2kB SRAM of the Arduino is the biggest botleneck here for doing any processing. In order to do this processing, we came up with multiple optimizations. 
 
 1)Cross Correlations 
 Instead of doing a FFT on the Data, we will extract a few characteristic frequencies components by correlating the signal with a set of frequencies. The expression for crosscorrelation of 2 discrete signals \(x,y\) is given by 
