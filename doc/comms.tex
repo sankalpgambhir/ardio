@@ -43,6 +43,13 @@ integers is done as follows:
 
     \item Send the frequencies back to MATLAB to print using the Serial port. 
 \end{enumerate}
+This protocol can be seen in this block diagram 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig/commsblock.pdf}
+    \caption{Block diagram for communication protocol.}
+    \label{fig:commsblock}
+\end{figure}
 
 However, we ran into some issues here, where several values were not detected by
 the Arduino. We tried multiple approaches to solve this 
