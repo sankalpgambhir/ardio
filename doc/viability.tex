@@ -1,7 +1,11 @@
-The first thing to do is check whether the correlation function gives us an appropriate response with this sampling rate. In order to do this, we plot the correlation coefficient of a signal and a pure harmonic vs a change in frequency about the pure harmonic for \(N\) datapoints. 
+The first thing to do is check whether the correlation function gives us an
+appropriate response with this sampling rate. In order to do this, we plot the
+correlation coefficient of a signal and a pure harmonic vs a change in frequency
+about the pure harmonic for \(N\) datapoints. 
 
 The code for plotting these graphs in MATLAB is given here: \\
-1)Code for correlation of 2 signals
+\begin{itemize}
+    \item Code for correlation of 2 signals
 \begin{lstlisting}
     
 function outp = corel(A,B)
@@ -17,7 +21,7 @@ function outp = corel(A,B)
 end
 \end{lstlisting} 
 
-2)Code for getting graphs
+\item Code for getting graphs
 \begin{lstlisting}
     function grp = coreldraw(f1,f2,f3,f4,phi4)
    t = -0.5:0.005:0.5; %Change the step size to get different resolutions
@@ -43,20 +47,27 @@ If we first try correlating with 100 data points, we get
     \caption{Correlation with 100 point sampling}
     \label{fig:100pts}
 \end{figure}
-Clearly, this does not provide a good enough degree of correlation as there are several significant analolous peaks. We would expect only 2 significant peaks correspoinding to 200 and 300 Hz. Next we try with 200 points. 
+Clearly, this does not provide a good enough degree of correlation as there are
+several significant analolous peaks. We would expect only 2 significant peaks
+correspoinding to 200 and 300 Hz. Next we try with 200 points. 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{fig/Graph1.PNG}
     \caption{Correlation with 200 point sampling}
     \label{fig:100pts}
 \end{figure}
-This gives us very clear peaks at the right frequencies. It appears that 200 points sampling is good enough. In order to check the resolution limit, we also try a signal where the frequencies are close: 
+This gives us very clear peaks at the right frequencies. It appears that 200
+points sampling is good enough. In order to check the resolution limit, we also
+try a signal where the frequencies are close: 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{fig/LowResolutionGraph3200ots.PNG}
     \caption{Correlation with 200 point sampling for 5Hz difference}
     \label{fig:200ptslowres}
 \end{figure}
-The 3 peaks expected are missed. This implies that we cannot separate frequencies very close to each other, and this is the price we have to pay for avoiding a FFT. From these graphs it is clear that a threshold greater than 0.1 will suffice for testing our audio signals. 
+The 3 peaks expected are missed. This implies that we cannot separate
+frequencies very close to each other, and this is the price we have to pay for
+avoiding a FFT. From these graphs it is clear that a threshold greater than 0.1
+will suffice for testing our audio signals. 
 
-
+\end{itemize}
