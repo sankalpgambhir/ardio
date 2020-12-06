@@ -1,6 +1,0 @@
-The input of the system is handled using MATLAB. This is appealing for several reasons 
-1)We can immedietly visualise and process the sound array that we get, making it easy to debug. 
-2)We can use the inbuilt system microphone. 
-MATLAB by default offers several different ways to get this Audio data, the lowest resolution being a 1000Hz Sampling frequency and 8bit sampling, using the audiorecorder object. Once we record the relevent sample, we extract an array with this data and after doing some basic filtering, to remove any high frequency noise that may affect the signal, we send the data to the Arduino via the Serial port. 
-
-The important part here is understanding how the serial communication with the Arduino works. The serial port can only send the  to 
