@@ -3,12 +3,12 @@
 First, tests were run on data generated in situ from a list of frequencies, coefficients, and phase differences
 
 \begin{align*}
-    c = \{c_1, c_2, \ldots, c_n\}\\
-    \omega = \{\omega_1, \omega_2, \ldots, \omega_n\}\\
-    \phi = \{\phi_1, \phi_2, \ldots, \phi_n\}\\
+    c &= \{c_1, c_2, \ldots, c_n\}\\
+    \omega &= \{\omega_1, \omega_2, \ldots, \omega_n\}\\
+    \phi &= \{\phi_1, \phi_2, \ldots, \phi_n\}\\
 \end{align*}
 
-which generate a 'generating' function for the discrete signal later
+which generate a 'generating' function for the discrete signal to follow
 
 \begin{align*}
     f(x) = \sum_{i = 1}^{n} c_i \cdot sin(w_i x + \phi_i)
@@ -45,6 +45,13 @@ maintain reasonable resolution after conversion to integer type to save memory.
 
 The signal is generated as even/odd pairs to facilitate pairwise storage
 implemented by \nameref{sec:doobit}.
+
+Playing with the described parameters, experiments were performed, and the
+results have been tabulated in \autoref{fig:synthexp}. Since we look for a
+global maxima of cross correlation, the phase is irrelevant to the results, but
+for the sake of completeness, an indication has been provided where phase shifts
+were tested. Several arbitrary values were tested, with the result being
+uneaffected as expected.
 
 \begin{figure}[ht]
     \centering
