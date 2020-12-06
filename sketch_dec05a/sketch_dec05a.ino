@@ -8,12 +8,12 @@ void setup() {
 }
 void loop() { 
   if (Serial.available()){
-                    text = Serial.readStringUntil('$');
+                    text = Serial.readStringUntil('$'); //In this code we use $ as the terminator character 
                                            ki = text.toInt(); 
-                                            if(ki == -7){                                                               
-                                              analogWrite(led,255);          
-                                                         }
-                                            if(ki == 0){          
-                                              analogWrite(led,0);          
-                                              }
+                                           if(ki ==0)digitalWrite(13,1);
+                                           if(ki==-7)digitalWrite(13,0);
+                                           
+                                           
+                                                   
+                                              
   }}
