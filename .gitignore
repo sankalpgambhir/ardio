@@ -38,4 +38,5 @@
 *.log
 *.synctex.gz
 *.synctex(busy)
-
+*.bbl
+*.blg
