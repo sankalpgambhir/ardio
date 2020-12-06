@@ -1,4 +1,76 @@
-not good
+\subsection{Synthetic Data}
+
+First, tests were run on data generated in situ from a list of frequencies, coefficients, and phase differences
+
+\begin{align*}
+    c = \{c_1, c_2, \ldots, c_n\}\\
+    \omega = \{\omega_1, \omega_2, \ldots, \omega_n\}\\
+    \phi = \{\phi_1, \phi_2, \ldots, \phi_n\}\\
+\end{align*}
+
+which generate a 'generating' function for the discrete signal later
+
+\begin{align*}
+    f(x) = \sum_{i = 1}^{n} c_i \cdot sin(w_i x + \phi_i)
+\end{align*}
+
+implemented as a lambda-function in code 
+
+\begin{lstlisting}[language=C++]
+auto f_gen = [w, c, p](int x){
+                float sum = 0;
+                for(int i = 0; i < wlist.size(); i++){
+                    sum += c[i] * sin(w[i]*x + p[i]);
+                }
+                return 7.0*sum/float(std::accumulate(c.begin(), c.end(), 0));
+            };
+            
+auto f = new signal[SIZE];
+
+for(int x = 0; x < SIZE; x++){
+    f[i] = signal(f_gen(2*x), f_gen(2*x + 1));
+}
+\end{lstlisting}
+
+The normalising factor may be succinctly written as 
+
+\begin{align*}
+    a_N = \frac{7.0}{\sum_{i = 1}^{n}c_i}~.
+\end{align*}
+
+It simply ensures that the cross correlation of the signals do not blow up and
+that a single signal agnostic threshold value may be chosen as a metric for
+matching. The factor of 7 scales the float value to the range (-7, 7) so as to
+maintain reasonable resolution after conversion to integer type to save memory.
+
+The signal is generated as even/odd pairs to facilitate pairwise storage
+implemented by \nameref{sec:doobit}.
+
+\begin{figure}[ht]
+    \centering
+    \def\arraystretch{1.5}
+    \setlength\tabcolsep{2em}
+    \begin{tabular}{c | c | c}
+        NCC Threshold (t)   & Input frequencies and coefficients (kHz)      & Output \\ \hline
+        0.1                 & 0.3, 0.5, 0.8                                 & 0.3, 0.5, 0.8 \\
+        0.1                 & 0.3, 0.5, 0.8$^\dagger$                       & 0.3, 0.5, 0.8 \\
+        0.1                 & 0.3, 0.5$^\dagger$, 0.8$^\dagger$             & 0.3, 0.5, 0.8 \\
+        0.2                 & 0.3, 0.5$^\dagger$, 0.8$^\dagger$             & 0.3, 0.5, 0.8 \\
+        0.2                 & 0.3, 0.5$^\dagger$, 0.8$^\dagger$             & 0.3, 0.5, 0.8 \\
+        0.2                 & 0.3, 4$\times$ 0.5$^\dagger$, 0.8$^\dagger$   & 0.3, 0.5, 0.8 \\
+        0.4                 & 0.3, 4$\times$ 0.5$^\dagger$, 0.8$^\dagger$   & 0.3, 0.5, 0.8 \\
+        0.5                 & 0.3, 4$\times$ 0.5$^\dagger$, 0.8$^\dagger$   & 0.3, 0.5      \\
+        0.6                 & 0.3, 4$\times$ 0.5$^\dagger$, 0.8$^\dagger$   & 0.5           \\
+        0.8                 & 0.3, 4$\times$ 0.5$^\dagger$, 0.8$^\dagger$   & $\emptyset$   \\
+        0.1                 & 0.3, 0.5, 0.35$^\dagger$                      & 0.3, 0.4, 0.5 \\
+        0.2                 & 0.3, 0.5, 0.35$^\dagger$                      & 0.3, 0.5     
+    \end{tabular}
+    \captionsetup{justification=centering}
+    \caption{Experiments in varying synthetic inputs and thresholds.\\
+    $\dagger.$ Phase shifted. Weight unit unless otherwise specified}
+    \label{fig:synthexp}
+
+\end{figure}
 
 screenshots of code compiled and running on arduino
 
