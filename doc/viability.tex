@@ -6,7 +6,7 @@ about the pure harmonic for \(N\) datapoints.
 The code for plotting these graphs in MATLAB is given here: \\
 \begin{itemize}
     \item Code for correlation of 2 signals
-\begin{lstlisting}
+\begin{lstlisting}[language=Matlab]
     
 function outp = corel(A,B)
  outp = 0;
@@ -22,7 +22,7 @@ end
 \end{lstlisting} 
 
 \item Code for getting graphs
-\begin{lstlisting}
+\begin{lstlisting}[language=Matlab]
     function grp = coreldraw(f1,f2,f3,f4,phi4)
    t = -0.5:0.005:0.5; %Change the step size to get different resolutions
 signal = round(7/3*(sin(f1*t) + sin(f2*t) + sin(f3*t) )) ; %This ensures we have a number between \(\pm7\)
