@@ -47,7 +47,7 @@ multiplications required in FFT calculations while giving more characteristic
 data. 
 
 \subsubsection{Memory Management}
-We store the signal using an array of 4 bit numbers, ie numbers from -7 to 7.
+We store the signal using an array of 4 bit numbers, i.e. numbers from -7 to 7.
 This has multiple benefits, such as being able to outright store more numbers,
 and more subtly, perform calculations in a smaller time period as the Arduino
 processor is based around an 8-bit bus. Instead of requiring multiple clock
@@ -55,7 +55,7 @@ cycles to process 16 / 32 bit datatypes like \texttt{float} adn \texttt{int}, we
 can process the signals much faster.
 
 \subsubsection{Frequency Space Pruning}
-Beginning with a dirac comb in frequency space, we prune a lattice tree of the
+Beginning with a Dirac comb in frequency space, we prune a lattice tree of the
 frequency power set via depth first binary search. This bypasses the
 computationally expensive cross correlation calculations for a lot of (wrong)
 frequencies. 
