@@ -44,7 +44,9 @@ matching. The factor of 7 scales the float value to the range (-7, 7) so as to
 maintain reasonable resolution after conversion to integer type to save memory.
 
 The signal is generated as even/odd pairs to facilitate pairwise storage
-implemented by \nameref{sec:doobit}.
+implemented by \nameref{sec:doobit}. The typename \texttt{signal} is an alias
+for \texttt{doobit}, kept as such for modularity amongst storage backends, and
+to possibly expand across architectures, saving major edits.
 
 Playing with the described parameters, experiments were performed, and the
 results have been tabulated in \autoref{fig:synthexp}. Since we look for a
@@ -58,7 +60,7 @@ uneaffected as expected.
     \def\arraystretch{1.5}
     \setlength\tabcolsep{2em}
     \begin{tabular}{c | c | c}
-        NCC Threshold (t)   & Input frequencies and coefficients (kHz)      & Output \\ \hline
+        NCC Threshold (t)   & Input frequencies and coefficients (kHz)      & Output (kHz)  \\ \hline
         0.1                 & 0.3, 0.5, 0.8                                 & 0.3, 0.5, 0.8 \\
         0.1                 & 0.3, 0.5, 0.8$^\dagger$                       & 0.3, 0.5, 0.8 \\
         0.1                 & 0.3, 0.5$^\dagger$, 0.8$^\dagger$             & 0.3, 0.5, 0.8 \\
@@ -73,9 +75,54 @@ uneaffected as expected.
         0.2                 & 0.3, 0.5, 0.35$^\dagger$                      & 0.3, 0.5     
     \end{tabular}
     \captionsetup{justification=centering}
-    \caption{Experiments in varying synthetic inputs and thresholds.\\
+    \caption{Experiments with varying synthetic inputs and thresholds.\\
     $\dagger.$ Phase shifted. Weight unit unless otherwise specified}
     \label{fig:synthexp}
+
+\end{figure}
+
+\subsection{Real Inputs}
+
+Not having a microphone module for the Arduino, we resorted to passing a
+recorded array to the device via MATLAB, opening its own can of worms by way of
+buffer overflows and race conditions, as described in detail in
+\autoref{subsec:buffinp}. 
+
+For currently unknown reasons, we had memory overflows with the same size of
+real data as we ran synthetic tests for. Curiously, in this case, the Arduino
+continuosly prints \texttt{'w'} on the Serial line. After much testing we have
+linked this behaviour to memory overflow, but are yet to find resources
+confirming it. 
+
+Reducing the size, however, allows us to perform some tests, limited by the data
+transfer speed as well, with the serial line taking up to 30 seconds to transfer
+all the data successfully, yet with significant packet loss. The best transfer
+ratio we were able to obtain after fine tuning the transfer rates and timing was
+400 packets received for 420 sent, but at this delicate parameter island, the
+Arduino would, with roughly half probability, run out of memory. It may be
+dependent on buffering of incoming packets. Buffering just a few more packets
+may have been pushing it over the edge.
+
+\begin{figure}[ht]
+    \centering
+    \def\arraystretch{1.5}
+    \setlength\tabcolsep{2em}
+    \begin{tabular}{c | c | c}
+        NCC Threshold (t)   & Input signals                                 & Output (kHz) \\ \hline
+        0.1                 & 0.4 kHz (generated using a phone speaker)     & INSERT \\   
+        0.1                 & 0.5 kHz (generated using a phone speaker)     & INSERT \\   
+        0.1                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
+        0.2                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
+        0.3                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
+        0.5                 & 0.6 kHz (generated using a phone speaker)     & INSERT \\   
+        0.1                 & Speech                                        & INSERT \\   
+        0.1                 & SOME SHIT CHORD                               & INSERT \\   
+        0.1                 & SOME SHIT CHORD                               & INSERT \\   
+        0.1                 & SOME SHIT CHORD                               & INSERT \\   
+    \end{tabular}
+    \captionsetup{justification=centering}
+    \caption{Experiments with real inputs and thresholds.}
+    \label{fig:realexp}
 
 \end{figure}
 
