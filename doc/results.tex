@@ -1,6 +1,7 @@
 \subsection{Synthetic Data}
 
-First, tests were run on data generated in situ from a list of frequencies, coefficients, and phase differences
+First, tests were run on data generated in situ from a list of frequencies,
+coefficients, and phase differences
 
 \begin{align*}
     c &= \{c_1, c_2, \ldots, c_n\}\\
@@ -55,6 +56,8 @@ for the sake of completeness, an indication has been provided where phase shifts
 were tested. Several arbitrary values were tested, with the result being
 uneaffected as expected.
 
+All synthetic tests were performed with a resolution of 1ms, and 400 data points.
+
 \begin{figure}[ht]
     \centering
     \def\arraystretch{1.5}
@@ -103,6 +106,12 @@ Arduino would, with roughly half probability, run out of memory. It may be
 dependent on buffering of incoming packets. Buffering just a few more packets
 may have been pushing it over the edge.
 
+For generating required frequencies, the Android app
+\href{https://play.google.com/store/apps/details?id=com.luxdelux.frequencygenerator}{Frequency
+Sound Generator} was used.
+
+All real tests were performed with a resolution of 1ms, and 200 data points.
+
 \begin{figure}[ht]
     \centering
     \def\arraystretch{1.5}
@@ -126,6 +135,12 @@ may have been pushing it over the edge.
 
 \end{figure}
 
+\subsection{Proofs}
+
+\subsubsection{Code and compilation}
+
 screenshots of code compiled and running on arduino
+
+\subsubsection{Arduino and Humans}
 
 photo video uploads
