@@ -57,41 +57,44 @@ void setup(){
   for(float i = 0.1; i < 1.0; i += 0.1){
     freq.push_back(i);  
   }
+
+  // recording indication
+  pinMode(13, 1);
+  digitalWrite(13,1);
+  recording = true;
 }
 
 void loop(){
 
     if(recording){
         // recording data
-		if (Serial.available()){
-			text = Serial.readStringUntil('$');
-			k[has_num] = text.toInt();
-			has_num++;
-		}
-		if ((has_num >= 2) && recorded < SIZE) {
-			recorded++;
-			f[recorded] = signal(k[0], k[1]); 
-			has_num = 0;
-		}
-		if(recorded >= SIZE){
-			Serial.write("G"); // we Good
-			digitalWrite(13,1);
-			recording = false;
-		}
+        if (Serial.available()){
+          k[has_num] = Serial.parseInt();
+          has_num++;
+        }
+        if ((has_num >= 2) && recorded < SIZE) {
+          f[recorded++] = signal(k[0], k[1]);
+          has_num = 0;
+        }
+        if(recorded >= SIZE){
+          Serial.write("G"); // we Good
+          digitalWrite(13,0);
+          recording = false;
+        }
     }
     else{
         // calculate with the data
 
         // f coming from data
         /*
-		auto f_gen = [](int x){
+		    auto f_gen = [](int x){
                     return (7.0*(sin(0.3 * x) + 4*sin(0.5 * x) + sin(0.6*x + 0.6))/6.0);
                     };
 
         for(int i = 0; i < SIZE; i++){
             f[i] = signal(f_gen(2*i), f_gen(2*i+1)); 
         }
-		*/
+		    */
 
         auto wpresent = checkcorr(f, freq);
 
@@ -99,7 +102,7 @@ void loop(){
             Serial.println(w);
         }
 
-        Serial.println("TEST$$$$$$$");
+        Serial.println("--LOOPEND--");
     }
 
     return;
@@ -173,7 +176,7 @@ std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
 
   if(wlist.size() == 0) return wlist;
 
-  float maxcorr = -1;
+  float *maxcorr = new float(-1);
 
   auto g_gen = [wlist](int x){
           float sum = 0;
@@ -189,15 +192,16 @@ std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
     g[i] = signal(g_gen(2*i), g_gen(2*i + 1));
   }
 
-  auto norm_coeff = sqrt((correlation(f, f) * (double)correlation(g, g)));
-  norm_coeff = 1/norm_coeff;
+  float* norm_coeff = new float(0);
+  *norm_coeff = sqrt(((double)correlation(f, f) * (double)correlation(g, g)));
+  *norm_coeff = 1/ (*norm_coeff);
 
   for(int i = -(SIZE/5) + 1; i < SIZE/5; i++){
     auto corr = crosscorrelation(f, g, i);
-    maxcorr = maxcorr > corr ? maxcorr : corr;
-    if (maxcorr < corr){
-      maxcorr = corr;
-      if(maxcorr*norm_coeff > corr_threshold) break;
+    *maxcorr = *maxcorr > corr ? *maxcorr : corr;
+    if (*maxcorr < corr){
+      *maxcorr = corr;
+      if((*maxcorr)*(*norm_coeff) > corr_threshold) break;
     }
   }
 
@@ -205,7 +209,13 @@ std::vector<float> checkcorr(signal* f, std::vector<float> wlist){
   // before recursion else we run over quota
   delete[] g; 
 
-  if(maxcorr*norm_coeff < corr_threshold) return std::vector<float>{};
+  if((*maxcorr)*(*norm_coeff) < corr_threshold){ 
+    delete norm_coeff;
+    delete maxcorr;
+    return std::vector<float>{};
+  }
+    delete norm_coeff;
+    delete maxcorr;
 
   if(wlist.size() == 1) return wlist;
 
