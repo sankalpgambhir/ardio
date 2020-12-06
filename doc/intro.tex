@@ -1,29 +1,60 @@
 
-The main idea of this project is to extract some characteristic audio data from the signal without having to resort to memory and computationally expensive fourier transforms. The 2kB SRAM of the Arduino is the biggest botleneck here for doing any processing. In order to do this processing, we came up with multiple optimizations. 
+The main idea of this project is to extract some characteristic audio data from
+the signal without having to resort to memory and computationally expensive
+fourier transforms. The 2KiB SRAM of the Arduino is the biggest botleneck here
+for doing any processing. In order to do this processing, we came up with
+multiple optimizations. 
 
-1)Cross Correlations 
-Instead of doing a FFT on the Data, we will extract a few characteristic frequencies components by correlating the signal with a set of frequencies. The expression for crosscorrelation of 2 discrete signals \(x,y\) is given by 
+\subsection{Optimizations}
+
+\subsubsection{Cross Correlations} 
+Instead of doing a FFT on the Data, we will extract a few characteristic
+frequencies components by correlating the signal with a set of frequencies. The
+expression for crosscorrelation of 2 discrete signals \(x,y\) is given by
+
 \begin{equation}
     R_{xy}[k] = \sum_{i} x[i]y[i-k]
 \end{equation}
-Along with some normalization. The harmonics form a linearly independent set and return 0 correlation when the product is integrated over several time periods, ie 
+
+Along with some normalization. The harmonics form a linearly independent set and
+return 0 correlation when the product is integrated over several time periods,
+i.e.
+
 \begin{equation}
     \frac{1}{\pi} \int_0^{2\pi}sin(n_1x)sin(n_2x) = \delta_{nn'}  
 \end{equation} 
-Where \(\delta\) is the usual Kronecker delta. We can normalize the correlation with the autocorrelation at 0 to get a number between -1 and 1 that characterized the coeficients.
+
+Where \(\delta\) is the usual Kronecker delta. We can normalize the correlation
+with the autocorrelation at 0 to get a number between -1 and 1 that
+characterized the coeficients.
+
 \begin{equation}
     c_{xy} = \frac{R_{xy}[0]}{\sqrt{R_{xx}[0]R_{yy}[0]} }
 \end{equation} 
-However, the above expression does not account for the phase shift \(\phi\) between the harmonics which reduces the correlation by a factor of \(cos(\phi)\)Therefore we modify check the signal with phase shifted test harmonics by modifying the expression to :
+
+However, the above expression does not account for the phase shift \(\phi\)
+between the harmonics which reduces the correlation by a factor of
+\(cos(\phi)\)Therefore we modify check the signal with phase shifted test
+harmonics by modifying the expression to:
+
 \begin{equation}
     c_{xy} = \frac{\mathnormal{max}\{R_{xy}[k]\}}{\sqrt{R_{xx}[0]R_{yy}[0]} }
 \end{equation}
-This ensures that the loss due to potential phase shift is avoided by getting an estimate of the phase. 
-Further, these correlations avoid the complex multiplications required in FFT calculations while giving more characteristic data. 
 
-2)Efficient Storage of Memory
-We store the signal using an array of 4 byte numbers, ie numbers from -7 to 7. This has several benefits: 
-a)You can store more numbers 
-b)You can perform the calculations in a smaller time period as the Arduino processor is 8-Bit. Instead of requiring multiple clock cycles to process 16 / 32 Bit datatypes like float we can process the signals much faster 
+This ensures that the loss due to potential phase shift is avoided by getting an
+estimate of the phase. Further, these correlations avoid the complex
+multiplications required in FFT calculations while giving more characteristic
+data. 
 
-3)Binary Search on the predefined frequency tree to find significant frequencies instead of running a linear comparison. 
+\subsubsection{Memory Management}
+We store the signal using an array of 4 bit numbers, ie numbers from -7 to 7.
+This has several benefits: a)You can store more numbers b)You can perform the
+calculations in a smaller time period as the Arduino processor is 8-Bit. Instead
+of requiring multiple clock cycles to process 16 / 32 Bit datatypes like float
+we can process the signals much faster 
+
+\subsubsection{Frequency Space Pruning}
+Beginning with a dirac comb in frequency space, we prune a lattice tree of the
+frequency power set via depth first binary search. This bypasses the
+computationally expensive cross correlation calculations for a lot of (wrong)
+frequencies. 
